@@ -4,11 +4,22 @@ import telebot
 import json
 from telebot import types
 
+helptext = '''Inline mode only !
+*Usage:*
+Type `@osuibot <osu! username or id>` in draft
+
+*Author:* @fumycat
+*Source:* https://github.com/fumycat/osu-bot
+'''
 osutoken = sys.argv[1]
 bottoken = sys.argv[2]
 bot = telebot.TeleBot(bottoken)
 with open('country.json') as code:    
     county_list = json.load(code)
+
+@bot.message_handler(content_types=["text"])
+def sendhelp(message):
+    bot.send_message(chat_id=message.chat.id, text=helptext, parse_mode='Markdown', disable_web_page_preview=True)
 
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
