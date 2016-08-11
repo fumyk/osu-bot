@@ -24,6 +24,7 @@ def sendhelp(message):
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
     results = []
+    print(query.query)
     payload = {'k': osutoken, 'u': query.query}
     r = requests.get('https://osu.ppy.sh/api/get_user', params=payload)
     pr = r.json()
