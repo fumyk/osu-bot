@@ -54,7 +54,12 @@ def query_text(query):
             modename = minttomode(mint)
             accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = parse(true_json, False)
             # From text
-            text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, str(accuracy), count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
+            try:
+                text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, str(accuracy), count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
+            except TypeError:
+                results.append(r404)
+                bot.answer_inline_query(query.id, results)
+                return
             # Form result
             result = types.InlineQueryResultArticle(
             id= str(mint), 
