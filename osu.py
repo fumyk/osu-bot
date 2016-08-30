@@ -27,6 +27,7 @@ with open('country.json') as code:
 @bot.message_handler(content_types=["text"])
 def sendhelp(message):
     bot.send_message(chat_id=message.chat.id, text=helptext, parse_mode='Markdown', disable_web_page_preview=True)
+    print('Help sent')
 
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
@@ -53,7 +54,7 @@ def query_text(query):
             modename = minttomode(mint)
             accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = parse(true_json, False)
             # From text
-            text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
+            text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, str(accuracy), count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
             # Form result
             result = types.InlineQueryResultArticle(
             id= str(mint), 
@@ -78,6 +79,7 @@ def minttomode(m):
 def formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount):
     country_name = codetoname(country)
     mode_name = minttomode(mint)
+    accuracy = accuracy + '%'
     text = '''*%s*(%s)
 #%s in world | _#%s in %s_
 
@@ -119,7 +121,8 @@ def parse(list, need_cheek):
         pp_raw = str(pp_raw)
     except TypeError:
         errorlevel = 1
-
+    if accuracy == None:
+        errorlevel = 1
     if need_cheek == True:
         return errorlevel
     else:
