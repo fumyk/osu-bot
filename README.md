@@ -12,5 +12,7 @@ python3 app.py {Osu! api token} {Telegram bot token}
 Requirements
 --------
 
-- (Requests)[https://github.com/kennethreitz/requests/]
-- (pyTelegramBotAPI)[https://github.com/eternnoir/pyTelegramBotAPI]
+- [Requests](https://github.com/kennethreitz/requests/)
+- [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
+
+Osu! api access - https://osu.ppy.sh/p/api
