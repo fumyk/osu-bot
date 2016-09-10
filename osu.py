@@ -1,7 +1,5 @@
-import requests
-import sys
-import telebot
-import json
+import requests, telebot
+import sys, getpass, json
 from telebot import types
 
 modelist = [{'n':'0', 'm':'osu!'},{'n':'1', 'm':'Taiko'},{'n':'2', 'm':'Catch the Beat'},{'n':'3', 'm':'osu!mania'}]
@@ -18,8 +16,13 @@ Type `@osuibot <osu! username or id>` in draft
 *Author:* @fumycat
 *Source:* https://github.com/fumycat/osu-bot
 '''
-osutoken = sys.argv[1]
-bottoken = sys.argv[2]
+
+osutoken = getpass.getpass('osutoken:')
+bottoken = getpass.getpass('bottoken:')
+
+# osutoken = sys.argv[1]
+# bottoken = sys.argv[2]
+
 bot = telebot.TeleBot(bottoken)
 with open('country.json') as code:    
     county_list = json.load(code)
@@ -55,7 +58,7 @@ def query_text(query):
             accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = parse(true_json, False)
             # From text
             try:
-                text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, str(accuracy), count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
+                text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
             except TypeError:
                 results.append(r404)
                 bot.answer_inline_query(query.id, results)

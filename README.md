@@ -6,7 +6,7 @@ Quickstart
 ```bash
 git clone https://github.com/fumycat/osu-bot.git
 cd osu-bot/
-python3 app.py {Osu! api token} {Telegram bot token}
+python3 osu.py
 ```
 
 Requirements
