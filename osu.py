@@ -25,7 +25,7 @@ bottoken = getpass.getpass('bottoken:')
 # bottoken = sys.argv[2]
 
 bot = telebot.TeleBot(bottoken)
-pprint(bot.getMe())
+pprint(bot.get_me())
 with open('country.json') as code:    
     county_list = json.load(code)
 
