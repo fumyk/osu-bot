@@ -1,6 +1,7 @@
 import requests, telebot
 import sys, getpass, json
 from telebot import types
+from pprint import pprint
 
 modelist = [{'n':'0', 'm':'osu!'},{'n':'1', 'm':'Taiko'},{'n':'2', 'm':'Catch the Beat'},{'n':'3', 'm':'osu!mania'}]
 
