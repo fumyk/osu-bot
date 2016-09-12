@@ -1,7 +1,9 @@
 import requests, telebot
-import sys, getpass, json
+import sys, getpass, json, logging
 from telebot import types
 from pprint import pprint
+
+logging.basicConfig(filename='last.log',level=logging.WARNING)
 
 modelist = [{'n':'0', 'm':'osu!'},{'n':'1', 'm':'Taiko'},{'n':'2', 'm':'Catch the Beat'},{'n':'3', 'm':'osu!mania'}]
 
@@ -25,19 +27,18 @@ bottoken = getpass.getpass('bottoken:')
 # bottoken = sys.argv[2]
 
 bot = telebot.TeleBot(bottoken)
-pprint(bot.get_me())
 with open('country.json') as code:    
     county_list = json.load(code)
 
 @bot.message_handler(content_types=["text"])
 def sendhelp(message):
     bot.send_message(chat_id=message.chat.id, text=helptext, parse_mode='Markdown', disable_web_page_preview=True)
-    print('Help sent')
+    logging.WARNING('Help sent')
 
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
     results = []
-    print(query.query)
+    logging.WARNING(str(query.query))
     payload = {'k': osutoken, 'u': query.query}
     check_request = requests.get('https://osu.ppy.sh/api/get_user', params=payload)
     check_json = check_request.json()
@@ -140,11 +141,15 @@ def parse(list, need_cheek):
 
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     while 1:
         try:
-            print("\nStart...")
+            logging.WARNING("\nStart...")
             bot.polling(none_stop=True)
         except Exception as e:
-            print("Exception")
-            print(str(e))
+            logging.warning("Exception")
+            logging.warning(str(e))
             continue
+=======
+     bot.polling(none_stop=True)
+>>>>>>> parent of cbe6aea... Ignore exception
