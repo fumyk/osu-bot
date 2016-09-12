@@ -140,4 +140,11 @@ def parse(list, need_cheek):
 
 
 if __name__ == '__main__':
-     bot.polling(none_stop=True)
+    while 1:
+        try:
+            print("\nStart...")
+            bot.polling(none_stop=True)
+        except Exception as e:
+            print("Exception")
+            print(str(e))
+            continue
