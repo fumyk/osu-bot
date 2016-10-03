@@ -1,5 +1,7 @@
-import requests, telebot
-import sys, getpass, json
+import requests
+import telebot
+import json
+import os
 from telebot import types
 from pprint import pprint
 
@@ -10,6 +12,7 @@ r404 = types.InlineQueryResultArticle(
         title="Nothing was found, sorry",
         input_message_content=types.InputTextMessageContent(message_text="*( ͡° ͜ʖ ͡°)*", parse_mode="Markdown", disable_web_page_preview=True)
         )
+
 helptext = '''Inline mode only !
 *Usage:*
 Type `@osuibot <osu! username or id>` in draft
@@ -18,8 +21,8 @@ Type `@osuibot <osu! username or id>` in draft
 *Source:* https://github.com/fumycat/osu-bot
 '''
 
-osutoken = getpass.getpass('osutoken:')
-bottoken = getpass.getpass('bottoken:')
+osutoken = os.environ['OSU_T']
+bottoken = os.environ['TG_OT']
 
 bot = telebot.TeleBot(bottoken)
 pprint(bot.get_me())
