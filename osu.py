@@ -1,17 +1,21 @@
 import requests
 import telebot
 import json
-import os
+import config
+import logging
 from telebot import types
-from pprint import pprint
 
-modelist = [{'n':'0', 'm':'osu!'},{'n':'1', 'm':'Taiko'},{'n':'2', 'm':'Catch the Beat'},{'n':'3', 'm':'osu!mania'}]
+logging.basicConfig(filename='last.log', level=logging.INFO)
+
+modelist = [{'n': '0', 'm': 'osu!'}, {'n': '1', 'm': 'Taiko'}, {'n': '2', 'm': 'Catch the Beat'},
+            {'n': '3', 'm': 'osu!mania'}]
 
 r404 = types.InlineQueryResultArticle(
-        id="5", 
-        title="Nothing was found, sorry",
-        input_message_content=types.InputTextMessageContent(message_text="*( ͡° ͜ʖ ͡°)*", parse_mode="Markdown", disable_web_page_preview=True)
-        )
+    id="5",
+    title="Nothing was found, sorry",
+    input_message_content=types.InputTextMessageContent(message_text="*( ͡° ͜ʖ ͡°)*", parse_mode="Markdown",
+                                                        disable_web_page_preview=True)
+)
 
 helptext = '''Inline mode only !
 *Usage:*
@@ -21,23 +25,23 @@ Type `@osuibot <osu! username or id>` in draft
 *Source:* https://github.com/fumycat/osu-bot
 '''
 
-osutoken = os.environ['OSU_T']
-bottoken = os.environ['TG_OT']
+osutoken = config.osu
 
-bot = telebot.TeleBot(bottoken)
-pprint(bot.get_me())
-with open('country.json') as code:    
+bot = telebot.TeleBot(config.tg)
+with open('country.json') as code:
     county_list = json.load(code)
+
 
 @bot.message_handler(content_types=["text"])
 def sendhelp(message):
     bot.send_message(chat_id=message.chat.id, text=helptext, parse_mode='Markdown', disable_web_page_preview=True)
-    print('Help sent')
+    logging.info('Help sent')
+
 
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
     results = []
-    print(query.query)
+    logging.info(str(query.query))
     payload = {'k': osutoken, 'u': query.query}
     check_request = requests.get('https://osu.ppy.sh/api/get_user', params=payload)
     check_json = check_request.json()
@@ -57,39 +61,45 @@ def query_text(query):
             true_request = requests.get('https://osu.ppy.sh/api/get_user', params=true_payload)
             true_json = true_request.json()
             modename = minttomode(mint)
-            accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = parse(true_json, False)
+            accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = parse(
+                true_json, False)
             # From text
             try:
-                text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount)
+                text = formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss,
+                                count_rank_s, count_rank_a, user_id, country, playcount)
             except TypeError:
                 results.append(r404)
                 bot.answer_inline_query(query.id, results)
                 return
             # Form result
             result = types.InlineQueryResultArticle(
-            id= str(mint), 
-            title= username,
-            description= modename,
-            input_message_content= types.InputTextMessageContent(message_text=text, parse_mode="Markdown", disable_web_page_preview=True)
+                id=str(mint),
+                title=username,
+                description=modename,
+                input_message_content=types.InputTextMessageContent(message_text=text, parse_mode="Markdown",
+                                                                    disable_web_page_preview=True)
             )
             results.append(result)
-
-    
     bot.answer_inline_query(query.id, results)
+
 
 def codetoname(t):
     for dict in county_list:
         if dict['Code'] == t:
             return dict['Name']
 
+
 def minttomode(m):
     for dict in modelist:
         if dict['n'] == str(m):
             return dict['m']
-def formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s, count_rank_a, user_id, country, playcount):
+
+
+def formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s,
+             count_rank_a, user_id, country, playcount):
     country_name = codetoname(country)
     mode_name = minttomode(mint)
-    accuracy = accuracy + '%'
+    accuracy += '%'
     text = '''*%s*(%s)
 #%s in world | _#%s in %s_
 
@@ -98,9 +108,12 @@ def formtext(username, mint, pp_rank, pp_country_rank, pp_raw, level, accuracy, 
 *Accuracy* - %s
 *Playcount* - %s
 *SS* - %s | *S* - %s | *A* - %s
-https://new.ppy.sh/u/''' %(username, mode_name, pp_rank, pp_country_rank, country_name, pp_raw, level, accuracy, playcount, count_rank_ss, count_rank_s, count_rank_a)
-    text = text + str(user_id)
+https://new.ppy.sh/u/''' % (
+    username, mode_name, pp_rank, pp_country_rank, country_name, pp_raw, level, accuracy, playcount, count_rank_ss,
+    count_rank_s, count_rank_a)
+    text += str(user_id)
     return text
+
 
 def parse(list, need_cheek):
     errorlevel = 0
@@ -131,20 +144,13 @@ def parse(list, need_cheek):
         pp_raw = str(pp_raw)
     except TypeError:
         errorlevel = 1
-    if accuracy == None:
+    if accuracy is None:
         errorlevel = 1
-    if need_cheek == True:
+    if need_cheek:
         return errorlevel
     else:
         return accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount
 
 
 if __name__ == '__main__':
-    while 1:
-        try:
-            print("\nStart...")
-            bot.polling(none_stop=True)
-        except Exception as e:
-            print("Exception")
-            print(str(e))
-            continue
+    bot.polling(none_stop=True)
