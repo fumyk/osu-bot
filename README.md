@@ -6,6 +6,8 @@ Quickstart
 ```bash
 git clone https://github.com/fumycat/osu-bot.git
 cd osu-bot/
+export OSU_T="{OSU! TOKEN HERE}"
+export TG_OT="{TELEGRAM TOKEN HERE}"
 python3 osu.py
 ```
 
