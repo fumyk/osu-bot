@@ -6,6 +6,7 @@ import logging
 from telebot import types
 
 logging.basicConfig(filename='last.log', level=logging.INFO)
+logging.getLogger('requests').setLevel(logging.WARNING)
 
 modelist = [{'n': '0', 'm': 'osu!'}, {'n': '1', 'm': 'Taiko'}, {'n': '2', 'm': 'Catch the Beat'},
             {'n': '3', 'm': 'osu!mania'}]
@@ -41,12 +42,15 @@ def sendhelp(message):
 @bot.inline_handler(lambda query: len(query.query) > 0)
 def query_text(query):
     results = []
-    logging.info(str(query.query))
+    try:
+        logging.info(str(query.query))
+    except:
+        return
     payload = {'k': osutoken, 'u': query.query}
     check_request = requests.get('https://osu.ppy.sh/api/get_user', params=payload)
     check_json = check_request.json()
     # check user 404
-    if check_json == []:
+    if not check_json:
         results.append(r404)
         bot.answer_inline_query(query.id, results)
         return
