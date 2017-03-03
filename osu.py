@@ -69,7 +69,7 @@ def inline_handler(bot, update):
     update.inline_query.answer(results)
 
 
-def format_response(username, mode, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s,
+def format_response(username, mode, pp_rank, pp_c_rank, pp_raw, lvl, accuracy, count_rank_ss, count_rank_s,
                     count_rank_a, user_id, country, playcount):
     return '''*{}*({})
 #{} in world | _#{} in {}_
@@ -79,26 +79,24 @@ def format_response(username, mode, pp_rank, pp_country_rank, pp_raw, level, acc
 *Accuracy* - {}%
 *Playcount* - {}
 *SS* - {} | *S* - {} | *A* - {}
-https://new.ppy.sh/u/{}'''.format(username, mode, pp_rank, pp_country_rank, country_list[country], pp_raw, level,
-                                  accuracy, playcount,
-                                  count_rank_ss, count_rank_s, count_rank_a, str(user_id))
+https://new.ppy.sh/u/{}'''.format(username, mode, str(pp_rank), str(pp_c_rank), country_list[country], str(pp_raw),
+                                  str(lvl), str(accuracy), str(playcount),
+                                  str(count_rank_ss), str(count_rank_s), str(count_rank_a), str(user_id))
 
 
-def parse(l):
-    accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount = '', '', '', '', '', '', '', '', '', '', '', ''
-    for d in l:
-        accuracy = d['accuracy']
-        count_rank_a = d['count_rank_a']
-        count_rank_s = d['count_rank_s']
-        count_rank_ss = d['count_rank_ss']
-        country = d['country']
-        level = d['level']
-        pp_raw = d['pp_raw']
-        pp_rank = d['pp_rank']
-        pp_country_rank = d['pp_country_rank']
-        username = d['username']
-        user_id = d['user_id']
-        playcount = d['playcount']
+def parse(d):
+    accuracy = d['accuracy']
+    count_rank_a = d['count_rank_a']
+    count_rank_s = d['count_rank_s']
+    count_rank_ss = d['count_rank_ss']
+    country = d['country']
+    level = d['level']
+    pp_raw = d['pp_raw']
+    pp_rank = d['pp_rank']
+    pp_country_rank = d['pp_country_rank']
+    username = d['username']
+    user_id = d['user_id']
+    playcount = d['playcount']
 
     try:
         accuracy = float(accuracy)
