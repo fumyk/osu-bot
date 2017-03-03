@@ -58,7 +58,8 @@ def inline_handler(bot, update):
                                          title=username,
                                          description=mode,
                                          input_message_content=InputTextMessageContent(text, parse_mode='Markdown')))
-        except TypeError:
+        except TypeError as e:
+            print(str(e))
             update.inline_query.answer(not_found)
 
         update.inline_query.answer(results)
