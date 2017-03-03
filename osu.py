@@ -6,6 +6,8 @@ import requests
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 
+from pprint import pprint
+
 token = os.environ.get('TOKEN')
 appname = os.environ.get('APPNAME')
 osu_token = os.environ.get('OSU')
@@ -43,9 +45,11 @@ def start(bot, update):
 def inline_handler(bot, update):
     results = []
     for index, mode in mode_list.items():
+        print(index, mode)
         query = ''
         request = requests.get('https://osu.ppy.sh/api/get_user', params={'k': osu_token, 'u': query, 'm': index})
         response = request.json()
+        pprint(response)
         if not response:
             update.inline_query.answer(not_found)
 
@@ -58,11 +62,11 @@ def inline_handler(bot, update):
                                          title=username,
                                          description=mode,
                                          input_message_content=InputTextMessageContent(text, parse_mode='Markdown')))
-        except TypeError as e:
+        except Exception as e:
             print(str(e))
-            update.inline_query.answer(not_found)
-
-        update.inline_query.answer(results)
+    if not results:
+        update.inline_query.answer(not_found)
+    update.inline_query.answer(results)
 
 
 def format_response(username, mode, pp_rank, pp_country_rank, pp_raw, level, accuracy, count_rank_ss, count_rank_s,
