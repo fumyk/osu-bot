@@ -61,7 +61,9 @@ def inline_handler(bot, update):
                 InlineQueryResultArticle(id=uuid4(),
                                          title=username,
                                          description=mode,
-                                         input_message_content=InputTextMessageContent(text, parse_mode='Markdown')))
+                                         input_message_content=InputTextMessageContent(text,
+                                                                                       parse_mode='Markdown',
+                                                                                       disable_web_page_preview=True)))
         except Exception as e:
             print(str(e))
     if not results:
