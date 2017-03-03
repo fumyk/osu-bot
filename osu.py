@@ -45,8 +45,8 @@ def start(bot, update):
 def inline_handler(bot, update):
     results = []
     for index, mode in mode_list.items():
-        print(index, mode)
-        query = ''
+        query = update.inline_query.query
+        print(query)
         request = requests.get('https://osu.ppy.sh/api/get_user', params={'k': osu_token, 'u': query, 'm': index})
         response = request.json()
         pprint(response)
