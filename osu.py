@@ -6,7 +6,6 @@ import requests
 from telegram import InlineQueryResultArticle, ParseMode, InputTextMessageContent
 from telegram.ext import Updater, InlineQueryHandler, CommandHandler
 
-from pprint import pprint
 
 token = os.environ.get('TOKEN')
 appname = os.environ.get('APPNAME')
@@ -49,7 +48,6 @@ def inline_handler(bot, update):
         print(query)
         request = requests.get('https://osu.ppy.sh/api/get_user', params={'k': osu_token, 'u': query, 'm': index})
         response = request.json()
-        pprint(response)
         if not response:
             update.inline_query.answer(not_found)
 
