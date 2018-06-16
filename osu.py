@@ -52,9 +52,9 @@ def inline_handler(bot, update):
             update.inline_query.answer(not_found)
 
         try:
-            acc, ranks_a, ranks_s, ranks_ss, c, lvl, pp, pp_rank, pp_c_rank, username, u_id, plays = parse(response[0])
+            acc, ranks_a, ranks_s, ranks_ss, c, lvl, pp, pp_rank, pp_c_rank, username, u_id, plays, count_ssh, count_sh = parse(response[0])
             text = format_response(username, mode, pp_rank, pp_c_rank, pp, lvl, acc, ranks_ss,
-                                   ranks_s, ranks_a, u_id, c, plays)
+                                   ranks_s, ranks_a, u_id, c, plays, count_ssh, count_sh)
             results.append(
                 InlineQueryResultArticle(id=uuid4(),
                                          title=username,
@@ -70,7 +70,7 @@ def inline_handler(bot, update):
 
 
 def format_response(username, mode, pp_rank, pp_c_rank, pp_raw, lvl, accuracy, count_rank_ss, count_rank_s,
-                    count_rank_a, user_id, country, playcount):
+                    count_rank_a, user_id, country, playcount, count_ssh, count_sh):
     return '''*{}*({})
 #{} in world | _#{} in {}_
 
@@ -79,9 +79,10 @@ def format_response(username, mode, pp_rank, pp_c_rank, pp_raw, lvl, accuracy, c
 *Accuracy* - {}%
 *Playcount* - {}
 *SS* - {} | *S* - {} | *A* - {}
-https://new.ppy.sh/u/{}'''.format(username, mode, str(pp_rank), str(pp_c_rank), country_list[country], str(pp_raw),
+*SSH* - {} | *SH* - {}
+https://osu.ppy.sh/u/{}'''.format(username, mode, str(pp_rank), str(pp_c_rank), country_list[country], str(pp_raw),
                                   str(lvl), str(accuracy), str(playcount),
-                                  str(count_rank_ss), str(count_rank_s), str(count_rank_a), str(user_id))
+                                  str(count_rank_ss), str(count_rank_s), str(count_rank_a), str(count_ssh), str(count_sh), str(user_id))
 
 
 def parse(d):
@@ -97,6 +98,8 @@ def parse(d):
     username = d['username']
     user_id = d['user_id']
     playcount = d['playcount']
+    count_ssh = d['count_rank_ssh']
+    count_sh = d['count_rank_sh']
 
     try:
         accuracy = float(accuracy)
@@ -110,7 +113,7 @@ def parse(d):
         pp_raw = str(pp_raw)
     except TypeError:
         return False
-    return accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount
+    return accuracy, count_rank_a, count_rank_s, count_rank_ss, country, level, pp_raw, pp_rank, pp_country_rank, username, user_id, playcount, count_ssh, count_sh
 
 
 updater.dispatcher.add_handler(CommandHandler('start', start))
